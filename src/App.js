@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import './App.css';
 import { Card } from './components/Cards';
 import { Form } from './components/Form';
-import todos from "./store/index";
+import { GetTodos, PriorityColorCodes } from "./store/index";
 import Storage from './storage/index';
 
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { todos: todos, showCreateTodoForm: false };
+    this.state = { todos: GetTodos(), showCreateTodoForm: false, taskPriority: PriorityColorCodes() };
     this.dragEventHandler = this.dragEventHandler.bind(this);
     this.storage = new Storage();
   }
@@ -48,9 +48,9 @@ class App extends Component {
   createTask(index, task) {
     let todos = this.state.todos;
     let todo = this.state.todos[index];
-    let nextId = todo.length + 1;
+    let nextId = todo.items.length + 1;
     nextId = 'I' + nextId;
-    let item = { id: nextId, task: task.name };
+    let item = { id: nextId, task: task.name, priority: this.state.taskPriority[task.priorityId], dateTime: task.taskDateTime };
     todo.items.push(item);
     todos[index] = todo;
     this.setState({ todos: todos });
@@ -101,7 +101,6 @@ class App extends Component {
           <button className="btn btn-primary" onClick={this.toggleForm.bind(this)}>Create Todo</button>
 
           {this.state.showCreateTodoForm ? <Form formType="card" placeholder="Enter Card Name" create={this.create.bind(this)} /> : null}
-
 
           {this.state.todos.map((todo, index) => {
             return <Card todo={todo} key={index} actionHandler={this.actionHandler.bind(this)} todoId={index} createItem={this.props.create}></Card>

@@ -34,13 +34,14 @@ export class Card extends React.Component {
         this.setState({ taskName: event.target.value });
     }
 
-    createTask(name) {
-        this.props.actionHandler('createtask', { cardIndex: this.props.todoId, task: { name } });
+    createTask(taskDetail) {
+        const { name, priorityId, taskDateTime } = taskDetail;
+        this.props.actionHandler('createtask', { cardIndex: this.props.todoId, task: { name, priorityId, taskDateTime } });
         this.showAddItemForm();
     }
 
     handleTaskSubmit(type, data) {
-        this.createTask(data.name);
+        this.createTask(data);
     }
 
     render() {
@@ -65,8 +66,8 @@ export class Card extends React.Component {
                         }) : null
                     }
 
-                    {this.state.showCreateItemForm ? <Form formType="task" placeholder="Enter Task Name" create={this.handleTaskSubmit.bind(this)} />
-                    : null}
+                    {this.state.showCreateItemForm ? <Form formType="task" isTaskForm="true" placeholder="Enter Task Name" create={this.handleTaskSubmit.bind(this)} />
+                        : null}
 
                 </Panel.Body>
             </Panel>
