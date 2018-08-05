@@ -13,11 +13,19 @@ export class Item extends React.Component {
         switch (type) {
             case 'days':
                 var oneDay = 24 * 60 * 60 * 1000;
-                var diffDays = Math.round(Math.abs((new Date(taskDateTime).getTime() - new Date().getTime()) / (oneDay)));
-                return diffDays > 0 ? `${diffDays} Days Remaining` : this.convertToRealTime('hours', taskDateTime);
+                var diffDays = Math.round((new Date(taskDateTime).getTime() - new Date().getTime()) / (oneDay));
+                if (diffDays > 0) {
+                    diffDays = Math.abs(diffDays);
+                    return `${diffDays} Days Remaining`;
+                }
+                return this.convertToRealTime('hours', taskDateTime);
             case 'hours':
-                let hours = Math.round(Math.abs(new Date(taskDateTime).getTime() - new Date().getTime()) / 36e5);
-                return hours > 0 ? `${hours} Hours Remaining` : this.convertToRealTime('minutes', taskDateTime);
+                let hours = Math.round(new Date(taskDateTime).getTime() - new Date().getTime()) / 36e5;
+                if (hours > 0) {
+                    hours = Math.round(hours);
+                    return `${hours} Hours Remaining`;
+                }
+                return this.convertToRealTime('minutes', taskDateTime);
             case 'minutes':
                 let diffMs = (new Date(taskDateTime) - new Date());
                 let diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000);
