@@ -93,6 +93,18 @@ class App extends Component {
     this.storage.setItem('todos', newTodos, true);
   }
 
+  componentDidMount() {
+    document.addEventListener('DOMContentLoaded', function () {
+      if (!Notification) {
+        console.log('Desktop notifications not available in your browser. Try Chromium.');
+        return;
+      }
+
+      if (Notification.permission !== "granted")
+        Notification.requestPermission();
+    });
+  }
+
   render() {
     return (
       <div className="App">

@@ -1,4 +1,5 @@
 import React from 'react';
+import { NotificationBuilder } from '../googlenotification';
 export class Item extends React.Component {
     dragStartHandler(event) {
         event.dataTransfer.setData("fromItem", event.target.dataset.taskid);
@@ -21,7 +22,7 @@ export class Item extends React.Component {
                 return this.convertToRealTime('hours', taskDateTime);
             case 'hours':
                 let hours = Math.round(new Date(taskDateTime).getTime() - new Date().getTime()) / 36e5;
-                if (hours > 0) {
+                if (Math.round(hours) > 0) {
                     hours = Math.round(hours);
                     return `${hours} Hours Remaining`;
                 }
@@ -35,6 +36,24 @@ export class Item extends React.Component {
                 return sec > 0 ? `${sec} Seconds Remaining` : "Times Up !!";
             default:
                 break;
+        }
+    }
+
+    triggerReminder() {
+        const notificationData = {
+            title: 'Reminder',
+            body: `${this.props.item.task}`,
+            logoUrl: ''
+        }
+        const notification = NotificationBuilder.createNotofication(notificationData);
+        notification.onclick = function () {
+            this.close();
+        }
+    }
+
+    componentDidMount() {
+        if (new Date(this.props.item.dateTime).getTime() - new Date().getTime() > 0) {
+            setTimeout(this.triggerReminder.bind(this), new Date(this.props.item.dateTime).getTime() - new Date().getTime());
         }
     }
 
